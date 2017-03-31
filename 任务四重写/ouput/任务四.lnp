@@ -1,0 +1,14 @@
+".\ouput\bufferInWatch.obj",
+".\ouput\bufferSetTime.obj",
+".\ouput\inDownWatch.obj",
+".\ouput\inWatch.obj",
+".\ouput\setClockOne.obj",
+".\ouput\setClockTwo.obj",
+".\ouput\setTime.obj",
+".\ouput\showTime.obj",
+".\ouput\stat.obj",
+".\ouput\dsp.obj",
+".\ouput\key.obj",
+".\ouput\main.obj" 
+TO ".\ouput\任务四" 
+PRINT(".\ouput\任务四.m51") RAMSIZE(256) 

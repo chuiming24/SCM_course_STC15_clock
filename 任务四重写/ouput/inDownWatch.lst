@@ -1,0 +1,133 @@
+C51 COMPILER V9.00   INDOWNWATCH                                                           01/15/2017 00:16:16 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE INDOWNWATCH
+OBJECT MODULE PLACED IN .\ouput\inDownWatch.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE allStat\inDownWatch.c BROWSE INCDIR(.\allBuffer;.\allStat) DEBUG OBJECTEXTE
+                    -ND PRINT(.\ouput\inDownWatch.lst) OBJECT(.\ouput\inDownWatch.obj)
+
+line level    source
+
+   1          #define uint unsigned int
+   2          #define uchar unsigned char
+   3          #define u32 long unsigned int
+   4          #include <STC15F2K60S2.H>
+   5          #include <dsp.h>
+   6          #include <stat.h>
+   7          #include <key.h>
+   8          #include <bufferInWatch.h>
+   9          
+  10          #include <showTime.h>
+  11          #include <inDownWatch.h>
+  12          
+  13          extern uchar time_blinkFlag;
+  14          
+  15          u32 inDownWatchTime = 6000;
+  16          uchar inDownWatchOpen = 0;
+  17          bit setWatchNum_flag = 1;
+  18          uint time_inDownWatchCnt = 0;
+  19          
+  20          void initinDownWatch(){
+  21   1          
+  22   1      }
+  23          void jumpinDownWatch(){
+  24   1          switch(input){
+  25   2              case 0:
+  26   2              case 1:
+  27   2              case 2:
+  28   2              case 3:    
+  29   2              case 4:
+  30   2              case 5:    
+  31   2              case 6:
+  32   2              case 7:
+  33   2              case 8:
+  34   2              case 9:
+  35   2                  if(setWatchNum_flag == 1){
+  36   3                      setWatchNum(input);
+  37   3                  }
+  38   2                  break;        
+  39   2              case 15:
+  40   2                  if(setWatchNum_flag == 1){
+  41   3                      setWatchNum_flag = 0;
+  42   3                      inDownWatchTime = tansWatchNum();
+  43   3                      
+  44   3                  }else if(setWatchNum_flag == 0){
+  45   3                      if(inDownWatchOpen == 1){
+  46   4                          inDownWatchOpen = 0;
+  47   4                      }else{
+  48   4                          inDownWatchOpen = 1;
+  49   4                      }
+  50   3                  }
+  51   2                  break;
+  52   2              case 13:
+  53   2                  inDownWatchOpen = 0;
+  54   2                  inDownWatchTime = 0; 
+C51 COMPILER V9.00   INDOWNWATCH                                                           01/15/2017 00:16:16 PAGE 2   
+
+  55   2                  time_inDownWatchCnt = 0; 
+  56   2                  setWatchNum_flag = 1;
+  57   2                  inDownWatchTime = 0;
+  58   2                  setWatchNum_tempCnt = 0;
+  59   2                  delWatchNum();
+  60   2                  nowStat = showTime;
+  61   2                  P30 = 1;
+  62   2                  break;
+  63   2          }     
+  64   1      }
+  65          void timeinDownWatch(){
+  66   1          if(inDownWatchOpen == 1){
+  67   2              time_inDownWatchCnt++;
+  68   2              if(time_inDownWatchCnt == 100){
+  69   3                  time_inDownWatchCnt = 0;
+  70   3                  if(inDownWatchTime != 0){
+  71   4                      inDownWatchTime--;
+  72   4                  }else{
+  73   4                      P30 = 0;
+  74   4                  }
+  75   3              }
+  76   2          }      
+  77   1      }
+  78          //void cleckinDownWatch();
+  79          void dspinDownWatch(){
+  80   1          if(setWatchNum_flag){
+  81   2              uchar i;
+  82   2              for(i = 0; i < 8; i++){        
+  83   3                  if(setWatchNum_tempCnt == i && time_blinkFlag == 0){
+  84   4                      dis_buf[setWatchNum_tempCnt] = 16;
+  85   4                  }else if(i == 1){
+  86   4                      dis_buf[i] = setWatchNum_tempNum[i]+17;
+  87   4                  }else{
+  88   4                      dis_buf[i] = setWatchNum_tempNum[i];
+  89   4                  }
+  90   3                  
+  91   3              }
+  92   2          }else{
+  93   2              u32 a = inDownWatchTime; 
+  94   2              uchar i = 7;
+  95   2              for(i = 0; i < 8; i++){
+  96   3                  if(i == 1){
+  97   4                      dis_buf[i] = a %10 + 17;
+  98   4                  }else{
+  99   4                      dis_buf[i] = a %10;
+ 100   4                  }           
+ 101   3                  a /= 10;    
+ 102   3              }        
+ 103   2          }    
+ 104   1      }
+ 105          //void destroyinDownWatch();
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    327    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+C51 COMPILER V9.00   INDOWNWATCH                                                           01/15/2017 00:16:16 PAGE 3   
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

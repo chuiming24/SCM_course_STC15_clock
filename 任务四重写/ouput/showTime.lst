@@ -1,0 +1,159 @@
+C51 COMPILER V9.00   SHOWTIME                                                              01/15/2017 00:16:21 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE SHOWTIME
+OBJECT MODULE PLACED IN .\ouput\showTime.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE allStat\showTime.c BROWSE INCDIR(.\allBuffer;.\allStat) DEBUG OBJECTEXTEND 
+                    -PRINT(.\ouput\showTime.lst) OBJECT(.\ouput\showTime.obj)
+
+line level    source
+
+   1          #define uint unsigned int
+   2          #define uchar unsigned char
+   3          #define u32 long unsigned int
+   4          #include <STC15F2K60S2.H>
+   5          #include <dsp.h>
+   6          #include <stat.h>
+   7          #include <key.h>
+   8          
+   9          #include <showTime.h>
+  10          #include <setTime.h>
+  11          #include <setClockOne.h>
+  12          #include <setClockTwo.h>
+  13          #include <inWatch.h>
+  14          #include <inDownWatch.h>
+  15          
+  16          uchar nowSec = 0;
+  17          uchar nowMin = 0;
+  18          uchar nowHour = 0;
+  19          
+  20          uint timeShowTimeCnt = 0;
+  21          
+  22          bit clockOneBeepFlag = 0;
+  23          bit clockTwoBeepFlag = 0;
+  24          
+  25          uint time_clockBeepCnt = 0;
+  26          uchar code clockOneBeep[10] = {0, 1, 1, 1};
+  27          uchar code clockTwoBeep[10] = {1, 0, 1, 0};
+  28          uchar clockBeepCnt = 0;
+  29          
+  30          /*********************时钟状态跳转********************/
+  31          /*说明：此函数要求在显示时间的状态下，遇到有按键按下时候方可调用
+  32          */
+  33          void jumpShowTime(){
+  34   1          switch(input){
+  35   2              case 10:
+  36   2                  initSetTime();
+  37   2                  nowStat = setTime;
+  38   2                  break;
+  39   2              case 11:
+  40   2                  initSetClockOne();
+  41   2                  nowStat = setClockOne;
+  42   2                  break;   
+  43   2              case 12:
+  44   2                  initSetClockTwo();
+  45   2                  nowStat = setClockTwo;
+  46   2                  break;
+  47   2              case 13:
+  48   2                  clockOneBeepFlag = 0;
+  49   2                  clockTwoBeepFlag = 0;
+  50   2                  break;        
+  51   2              case 14:
+  52   2                  initinWatch();
+  53   2                  nowStat = inWatch;
+  54   2                  break;
+C51 COMPILER V9.00   SHOWTIME                                                              01/15/2017 00:16:21 PAGE 2   
+
+  55   2              case 15:
+  56   2                  initinDownWatch();
+  57   2                  nowStat = inDownWatch;                
+  58   2                  break;        
+  59   2          }      
+  60   1      }
+  61          
+  62          
+  63          
+  64          /*********************时钟运行********************/
+  65          /*说明：此函数要求在定时器中每一秒运行一次
+  66          */
+  67          void runTime(){
+  68   1          nowSec++;
+  69   1          if(nowSec == 60){
+  70   2              nowSec = 0;
+  71   2              nowMin++;
+  72   2              if(nowMin == 60){
+  73   3                  nowMin = 0;
+  74   3                  nowHour++;
+  75   3                  if(nowHour == 24){
+  76   4                      nowHour = 0;
+  77   4                  }
+  78   3              }
+  79   2          }
+  80   1      
+  81   1      }
+  82          
+  83          void timeShowTime(){
+  84   1          timeShowTimeCnt++;
+  85   1          if(timeShowTimeCnt == 1000){
+  86   2              timeShowTimeCnt = 0;
+  87   2              runTime();
+  88   2          }
+  89   1          
+  90   1          if(clockOneBeepFlag == 1 || clockTwoBeepFlag == 1){
+  91   2              time_clockBeepCnt++;
+  92   2              if(time_clockBeepCnt == 200){
+  93   3                  time_clockBeepCnt = 0;
+  94   3                  if(clockOneBeepFlag == 1){
+  95   4                      P30 = clockOneBeep[clockBeepCnt];
+  96   4                  }else if(clockTwoBeepFlag == 1){
+  97   4                      P30 = clockTwoBeep[clockBeepCnt];
+  98   4                  }
+  99   3                  if(++clockBeepCnt == 4)clockBeepCnt = 0;
+ 100   3              }
+ 101   2          }else{
+ 102   2              P30 = 1;
+ 103   2          }            
+ 104   1      }
+ 105          
+ 106          void cleckShowTime(){
+ 107   1          if(nowSec == clockOneSec && nowMin == clockOneMin && nowHour == clockOneHour){
+ 108   2              clockOneBeepFlag = 1;
+ 109   2          }
+ 110   1          if(nowSec == clockTwoSec && nowMin == clockTwoMin && nowHour == clockTwoHour){
+ 111   2              clockTwoBeepFlag = 1;
+ 112   2          }    
+ 113   1      }
+ 114          
+ 115          void dspShowTime(uchar sec, uchar min, uchar hour){
+ 116   1              uchar i;
+C51 COMPILER V9.00   SHOWTIME                                                              01/15/2017 00:16:21 PAGE 3   
+
+ 117   1              for(i = 0; i < 2; i++){
+ 118   2                      dis_buf[i] = sec %10;
+ 119   2                      sec /= 10;      
+ 120   2              }
+ 121   1              for(i = 2; i < 4; i++){
+ 122   2                      dis_buf[i] = min %10;
+ 123   2                      min /= 10;      
+ 124   2              }
+ 125   1              for(i = 4; i < 6; i++){
+ 126   2                      dis_buf[i] = hour %10;
+ 127   2                      hour /= 10;     
+ 128   2              }
+ 129   1              dis_buf[6] = 16;
+ 130   1              dis_buf[7] = 16;
+ 131   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    289    ----
+   CONSTANT SIZE    =     20    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,75 @@
+C51 COMPILER V9.00   BUFFERSETTIME                                                         01/15/2017 00:16:16 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE BUFFERSETTIME
+OBJECT MODULE PLACED IN .\ouput\bufferSetTime.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE allBuffer\bufferSetTime.c BROWSE INCDIR(.\allBuffer;.\allStat) DEBUG OBJECT
+                    -EXTEND PRINT(.\ouput\bufferSetTime.lst) OBJECT(.\ouput\bufferSetTime.obj)
+
+line level    source
+
+   1          #define uint unsigned int
+   2          #define uchar unsigned char
+   3          #define u32 long unsigned int
+   4          #include <bufferSetTime.h>
+   5          
+   6          uchar setTime_tempCnt = 5;
+   7          uchar setTIme_tempNumber[6] = {0};
+   8          
+   9          
+  10          /*********************在设置时间缓冲区中写入一个数字********************/
+  11          /*说明：此函数要求在设置时间或闹钟时候按下0-9时候调用，会将数字保存到缓冲区，并跳转至下一位
+  12          */
+  13          void setTimeNum(uchar input){
+  14   1          switch(setTime_tempCnt){
+  15   2              case 0:
+  16   2              case 2:
+  17   2              case 4:
+  18   2                  setTIme_tempNumber[setTime_tempCnt] = input;
+  19   2                  if(setTime_tempCnt == 0){
+  20   3                      setTime_tempCnt = 6;
+  21   3                  }
+  22   2                  setTime_tempCnt--;
+  23   2                  break;
+  24   2              case 1:
+  25   2              case 3:
+  26   2                  if(input <= 6){
+  27   3                      setTIme_tempNumber[setTime_tempCnt] = input;
+  28   3                      setTime_tempCnt--;
+  29   3                  }    
+  30   2                  break;
+  31   2              case 5:
+  32   2                  if(input <= 2){
+  33   3                      setTIme_tempNumber[setTime_tempCnt] = input;
+  34   3                      setTime_tempCnt--;
+  35   3                  }
+  36   2                  break;    
+  37   2          }
+  38   1      }
+  39          
+  40          /*********************清空时间设置缓冲区********************/
+  41          /*说明：此函数用于清空缓冲区
+  42          */
+  43          void delTimeTemp(){
+  44   1          uchar i;
+  45   1          for(i = 0; i < 6; i++){
+  46   2              setTIme_tempNumber[i] = 0;   
+  47   2          }
+  48   1          setTime_tempCnt = 5;
+  49   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     73    ----
+   CONSTANT SIZE    =   ----    ----
+C51 COMPILER V9.00   BUFFERSETTIME                                                         01/15/2017 00:16:16 PAGE 2   
+
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

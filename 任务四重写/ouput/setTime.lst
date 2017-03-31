@@ -1,0 +1,100 @@
+C51 COMPILER V9.00   SETTIME                                                               01/15/2017 00:16:19 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE SETTIME
+OBJECT MODULE PLACED IN .\ouput\setTime.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE allStat\setTime.c BROWSE INCDIR(.\allBuffer;.\allStat) DEBUG OBJECTEXTEND P
+                    -RINT(.\ouput\setTime.lst) OBJECT(.\ouput\setTime.obj)
+
+line level    source
+
+   1          #define uint unsigned int
+   2          #define uchar unsigned char
+   3          #define u32 long unsigned int
+   4          #include <STC15F2K60S2.H>
+   5          #include <dsp.h>
+   6          #include <stat.h>
+   7          #include <key.h>
+   8          #include <bufferSetTime.h>
+   9          
+  10          #include <showTime.h>
+  11          #include <setTime.h>
+  12          
+  13          extern uchar time_blinkFlag;
+  14          
+  15          
+  16          /*********************设置时钟初始化********************/
+  17          /*说明：此函数用于在进入设置时钟时候载入当前时钟
+  18          */
+  19          void initBufferSetTime(){
+  20   1          setTIme_tempNumber[0] = nowSec%10;
+  21   1          setTIme_tempNumber[1] = nowSec/10%10;
+  22   1          setTIme_tempNumber[2] = nowMin%10;
+  23   1          setTIme_tempNumber[3] = nowMin/10%10;
+  24   1          setTIme_tempNumber[4] = nowHour%10;
+  25   1          setTIme_tempNumber[5] = nowHour/10%10;
+  26   1      }
+  27          
+  28          
+  29          
+  30          void initSetTime(){
+  31   1          initBufferSetTime();
+  32   1      }
+  33          
+  34          
+  35          void jumpSetTime(){
+  36   1          switch(input){
+  37   2              case 0:
+  38   2              case 1:
+  39   2              case 2:
+  40   2              case 3:    
+  41   2              case 4:
+  42   2              case 5:    
+  43   2              case 6:
+  44   2              case 7:
+  45   2              case 8:
+  46   2              case 9:
+  47   2                  setTimeNum(input);
+  48   2                  break;
+  49   2              case 10:
+  50   2                  nowSec = setTIme_tempNumber[0]+setTIme_tempNumber[1]*10;
+  51   2                  nowMin = setTIme_tempNumber[2]+setTIme_tempNumber[3]*10;
+  52   2                  nowHour = setTIme_tempNumber[4]+setTIme_tempNumber[5]*10;
+  53   2                  delTimeTemp();
+  54   2                  nowStat = showTime;
+C51 COMPILER V9.00   SETTIME                                                               01/15/2017 00:16:19 PAGE 2   
+
+  55   2                  break;
+  56   2          }    
+  57   1      }
+  58          
+  59          //void cleckSetTime();
+  60          void dspSetTime(){
+  61   1              uchar i;
+  62   1              for(i = 0; i < 6; i++){
+  63   2              
+  64   2              if(setTime_tempCnt == i && time_blinkFlag == 0){
+  65   3                  dis_buf[setTime_tempCnt] = 16;
+  66   3              }else{
+  67   3                  dis_buf[i] = setTIme_tempNumber[i];
+  68   3              }
+  69   2              
+  70   2              }
+  71   1      
+  72   1              dis_buf[6] = 16;
+  73   1              dis_buf[7] = 16;
+  74   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    165    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

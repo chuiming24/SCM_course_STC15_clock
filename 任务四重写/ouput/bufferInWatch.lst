@@ -1,0 +1,64 @@
+C51 COMPILER V9.00   BUFFERINWATCH                                                         01/15/2017 00:16:14 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE BUFFERINWATCH
+OBJECT MODULE PLACED IN .\ouput\bufferInWatch.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE allBuffer\bufferInWatch.c BROWSE INCDIR(.\allBuffer;.\allStat) DEBUG OBJECT
+                    -EXTEND PRINT(.\ouput\bufferInWatch.lst) OBJECT(.\ouput\bufferInWatch.obj)
+
+line level    source
+
+   1          #define uint unsigned int
+   2          #define uchar unsigned char
+   3          #define u32 long unsigned int
+   4          #include <bufferInWatch.h>
+   5          uchar setWatchNum_tempCnt = 0;
+   6          uchar setWatchNum_tempNum[8] = {0};
+   7          
+   8          
+   9          /*********************在设置倒计时缓冲区中写入一个数字********************/
+  10          /*说明：此函数要求在设置倒计时时候按下0-9时候调用，会将数字保存到缓冲区，并跳转至下一位
+  11          */
+  12          void setWatchNum(uchar input){
+  13   1          setWatchNum_tempNum[setWatchNum_tempCnt] = input;
+  14   1          setWatchNum_tempCnt++;
+  15   1          if(setWatchNum_tempCnt == 8){
+  16   2              setWatchNum_tempCnt = 0;
+  17   2          }
+  18   1      }
+  19          /*********************缓冲区转换********************/
+  20          /*说明：此函数用于将缓冲区的数字转换为数字输出
+  21          */
+  22          u32 tansWatchNum(){
+  23   1          uchar i;
+  24   1          u32 output = 0;
+  25   1          output = output + setWatchNum_tempNum[7];
+  26   1          for(i = 1; i < 8; i++){
+  27   2              output *= 10;
+  28   2              output += setWatchNum_tempNum[7-i];       
+  29   2          }
+  30   1          return output;
+  31   1      }
+  32          /*********************清空倒计时设置缓冲区********************/
+  33          /*说明：此函数用于清空缓冲区
+  34          */
+  35          void delWatchNum(){
+  36   1          uchar i;
+  37   1          for(i = 0; i < 8; i++){
+  38   2              setWatchNum_tempNum[i] = 0;   
+  39   2          }
+  40   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    139    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

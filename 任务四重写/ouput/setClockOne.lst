@@ -1,0 +1,101 @@
+C51 COMPILER V9.00   SETCLOCKONE                                                           01/15/2017 00:16:18 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE SETCLOCKONE
+OBJECT MODULE PLACED IN .\ouput\setClockOne.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE allStat\setClockOne.c BROWSE INCDIR(.\allBuffer;.\allStat) DEBUG OBJECTEXTE
+                    -ND PRINT(.\ouput\setClockOne.lst) OBJECT(.\ouput\setClockOne.obj)
+
+line level    source
+
+   1          #define uint unsigned int
+   2          #define uchar unsigned char
+   3          #define u32 long unsigned int
+   4          #include <STC15F2K60S2.H>
+   5          #include <dsp.h>
+   6          #include <stat.h>
+   7          #include <key.h>
+   8          #include <bufferSetTime.h>
+   9          
+  10          #include <showTime.h>
+  11          #include <setTime.h>
+  12          #include <setClockOne.h>
+  13          
+  14          extern uchar time_blinkFlag;
+  15          
+  16          uchar clockOneSec;
+  17          uchar clockOneMin;
+  18          uchar clockOneHour;
+  19          
+  20          /*********************设置闹钟初始化********************/
+  21          /*说明：此函数用于在进入设置时钟时候载入当前时钟
+  22          */
+  23          void initBufferClockOne(){
+  24   1          setTIme_tempNumber[0] = clockOneSec%10;
+  25   1          setTIme_tempNumber[1] = clockOneSec/10%10;
+  26   1          setTIme_tempNumber[2] = clockOneMin%10;
+  27   1          setTIme_tempNumber[3] = clockOneMin/10%10;
+  28   1          setTIme_tempNumber[4] = clockOneHour%10;
+  29   1          setTIme_tempNumber[5] = clockOneHour/10%10;
+  30   1      }
+  31          
+  32          
+  33          void initSetClockOne(){
+  34   1          initBufferClockOne();
+  35   1      }
+  36          void jumpSetClockOne(){
+  37   1          switch(input){
+  38   2              case 0:
+  39   2              case 1:
+  40   2              case 2:
+  41   2              case 3:    
+  42   2              case 4:
+  43   2              case 5:    
+  44   2              case 6:
+  45   2              case 7:
+  46   2              case 8:
+  47   2              case 9:
+  48   2                  setTimeNum(input);
+  49   2                  break;
+  50   2              case 11:
+  51   2                  clockOneSec = setTIme_tempNumber[0]+setTIme_tempNumber[1]*10;
+  52   2                  clockOneMin = setTIme_tempNumber[2]+setTIme_tempNumber[3]*10;
+  53   2                  clockOneHour = setTIme_tempNumber[4]+setTIme_tempNumber[5]*10;
+  54   2                  delTimeTemp();
+C51 COMPILER V9.00   SETCLOCKONE                                                           01/15/2017 00:16:18 PAGE 2   
+
+  55   2                  nowStat = showTime;
+  56   2                  break;
+  57   2          }    
+  58   1      }
+  59          //void timeSetClockOne();
+  60          //void cleckSetClockOne();
+  61          void dspSetClockOne(){
+  62   1          uchar i;
+  63   1              for(i = 0; i < 6; i++){
+  64   2              
+  65   2              if(setTime_tempCnt == i && time_blinkFlag == 0){
+  66   3                  dis_buf[setTime_tempCnt] = 16;
+  67   3              }else{
+  68   3                  dis_buf[i] = setTIme_tempNumber[i];
+  69   3              }
+  70   2              
+  71   2              }
+  72   1              dis_buf[6] = 16;
+  73   1              dis_buf[7] = 10;
+  74   1      }
+  75          //void destroySetClockOne();
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    166    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

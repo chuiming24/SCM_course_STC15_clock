@@ -1,0 +1,85 @@
+C51 COMPILER V9.00   INWATCH                                                               01/15/2017 00:16:17 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE INWATCH
+OBJECT MODULE PLACED IN .\ouput\inWatch.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE allStat\inWatch.c BROWSE INCDIR(.\allBuffer;.\allStat) DEBUG OBJECTEXTEND P
+                    -RINT(.\ouput\inWatch.lst) OBJECT(.\ouput\inWatch.obj)
+
+line level    source
+
+   1          #define uint unsigned int
+   2          #define uchar unsigned char
+   3          #define u32 long unsigned int
+   4          #include <STC15F2K60S2.H>
+   5          #include <dsp.h>
+   6          #include <stat.h>
+   7          #include <key.h>
+   8          
+   9          #include <showTime.h>
+  10          #include <inWatch.h>
+  11          
+  12          u32 inWatchTime = 0;
+  13          uchar inWatchOpen = 0;
+  14          uint time_inWatchCnt = 0;
+  15          
+  16          void initinWatch(){
+  17   1          inWatchTime = 0;
+  18   1          inWatchOpen = 0;
+  19   1      }
+  20          void jumpinWatch(){
+  21   1          switch(input){
+  22   2              case 14:
+  23   2                  if(inWatchOpen == 1){
+  24   3                      inWatchOpen = 0;
+  25   3                  }else{
+  26   3                      inWatchOpen = 1;
+  27   3                  }
+  28   2                  break;
+  29   2              case 13:
+  30   2                  inWatchOpen = 0;
+  31   2                  inWatchTime = 0; 
+  32   2                  time_inWatchCnt = 0;        
+  33   2                  nowStat = showTime;
+  34   2                  break;
+  35   2          }     
+  36   1      }
+  37          void timeinWatch(){
+  38   1          if(inWatchOpen == 1){
+  39   2              time_inWatchCnt++;
+  40   2              if(time_inWatchCnt == 100){
+  41   3                  time_inWatchCnt = 0;
+  42   3                  inWatchTime++;
+  43   3              }
+  44   2          }     
+  45   1      }
+  46          //void cleckinWatch();
+  47          void dspinWatch(){
+  48   1          u32 a = inWatchTime;    
+  49   1              uchar i = 7;
+  50   1              for(i = 0; i < 8; i++){
+  51   2              if(i == 1){
+  52   3                  dis_buf[i] = a %10 + 17;
+  53   3              }else{
+  54   3                  dis_buf[i] = a %10;
+C51 COMPILER V9.00   INWATCH                                                               01/15/2017 00:16:17 PAGE 2   
+
+  55   3              }               
+  56   2                      a /= 10;        
+  57   2              }
+  58   1      }
+  59          //void destroyinWatch();
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    202    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,94 @@
+C51 COMPILER V9.00   MAIN                                                                  01/15/2017 00:16:24 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\ouput\main.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE main.c BROWSE INCDIR(.\allBuffer;.\allStat) DEBUG OBJECTEXTEND PRINT(.\oupu
+                    -t\main.lst) OBJECT(.\ouput\main.obj)
+
+line level    source
+
+   1          #define uint unsigned int
+   2          #define uchar unsigned char
+   3          #define u32 long unsigned int
+   4          #include <STC15F2K60S2.H>
+   5          #include <dsp.h>
+   6          #include <stat.h>
+   7          #include <key.h>
+   8          
+   9          uchar time_inputScanFlag = 0;
+  10          uchar time_inputScanCnt = 0;
+  11          uchar time_blinkFlag = 0;
+  12          uint time_blinkCnt = 0;
+  13          
+  14          #include <gpio.h> 
+  15          void Timer0Init(void)           //1毫秒@12.000MHz
+  16          {
+  17   1              AUXR &= 0x7F;           //定时器时钟12T模式
+  18   1              TMOD &= 0xF0;           //设置定时器模式
+  19   1              TMOD |= 0x01;           //设置定时器模式
+  20   1              TL0 = 0x18;             //设置定时初值
+  21   1              TH0 = 0xFC;             //设置定时初值
+  22   1              TF0 = 0;                //清除TF0标志
+  23   1              TR0 = 1;                //定时器0开始计时
+  24   1      }
+  25          
+  26          void main(){
+  27   1          gpio();
+  28   1          Timer0Init();
+  29   1          ET0 = 1;
+  30   1          EA = 1;
+  31   1          while(1){
+  32   2              cleckAll();
+  33   2              if(time_inputScanFlag == 1){
+  34   3                  time_inputScanFlag = 0;
+  35   3                  scanKey();
+  36   3              }
+  37   2              if(inputFlag == 1){
+  38   3                  inputFlag = 0;
+  39   3                  jumpAll();
+  40   3              }        
+  41   2              dspAll();
+  42   2          }
+  43   1      }
+  44          
+  45          
+  46          void timer0() interrupt 1{
+  47   1              TL0 = 0x18;             //设置定时初值
+  48   1              TH0 = 0xFC;             //设置定时初值
+  49   1              display();
+  50   1              
+  51   1          time_inputScanCnt++;
+  52   1          if(time_inputScanCnt == 10){
+  53   2              time_inputScanCnt = 0;
+  54   2              time_inputScanFlag = 1;
+C51 COMPILER V9.00   MAIN                                                                  01/15/2017 00:16:24 PAGE 2   
+
+  55   2          }
+  56   1          
+  57   1          time_blinkCnt++;
+  58   1          if(time_blinkCnt == 300){
+  59   2              time_blinkCnt = 0;
+  60   2              if(time_blinkFlag == 1){
+  61   3                  time_blinkFlag = 0;
+  62   3              }else{
+  63   3                  time_blinkFlag = 1;
+  64   3              }
+  65   2          }
+  66   1          
+  67   1          timeAll();
+  68   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    202    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
